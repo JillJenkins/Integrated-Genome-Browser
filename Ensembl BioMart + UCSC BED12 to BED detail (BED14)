@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 #create file objects
-file1 = open ('C_sabeus_Mar_2014.mart.txt')
-file2 = open ('C_sabeus_Mar_2014.ensGene.bed')
+file1 = open ('Biomart.tsv')
+file2 = open ('ensGene.bed')
 
 #read in the first file and make a dictionary
 martDict = {}
@@ -16,7 +16,7 @@ for line in file1:
         
         
 #open the output file
-outfile = open('C_sabeus_Mar_2014.ensMartRefGene.bed', 'w')
+outfile = open('G_species_MMM_YYYY_ensGene.bed', 'w')
 
 
 #read in second file and make a dictionary
