@@ -7,27 +7,29 @@ file2 = open ('ensGene.bed')
 #read in the first file and make a dictionary
 martDict = {}
 
+
 for line in file1:
     fields = line.strip().split('\t')
+    field14 = ' '.join(fields[2:])
     if len(fields) == 1:
         martDict[fields[0]] = ''
     else:
-        martDict[fields[0]] = fields[1] 
+        martDict[fields[0]] = fields[1] + '\t' + field14
         
-        
+
 #open the output file
-outfile = open('G_species_MMM_YYYY_ensGene.bed', 'w')
+outfile = open('G_species_MMM_YYYY.ensGene.bed', 'w')
 
 
-#read in second file and make a dictionary
+#read in second file and use key (field 4) to map to the dictionary 
+#and append line with mapped value from dictionary
 for line in file2:
     fields = line.strip().split('\t')
     # add the new field
     if fields[3] in martDict:
-        line = '\t'.join(fields) + '\t' + martDict[fields[3]] + '\tNA'
+        line = '\t'.join(fields) + '\t' + martDict[fields[3]]
     else:
-        line = '\t'.join(fields) + '\t' + martDict[fields[1]] + '\tNA'
+        line = '\t'.join(fields) + '\t' + martDict[fields[3]] + '\tNA'
     
-    
-    #write to new file for use in IGB
+    #writing to ouput file, which will write to the current working directory
     outfile.write(line + '\n')
