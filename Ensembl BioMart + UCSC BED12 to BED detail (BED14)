@@ -1,35 +1,69 @@
-#!/usr/bin/env python3
+"""
+This script will accept a UCSC Table Browser ensGene BED file and merge it with an Ensembl Biomart file generating a BED14/detail file. To receive the desired output below, the Biomart file must be in a specific user-defined format(see below). 
 
-#create file objects
-file1 = open ('Biomart.tsv')
-file2 = open ('ensGene.bed')
+Navigate to the following URL: 
+    http://useast.ensembl.org/biomart/martview/22277bc12da5624bbf2728be0832e026
 
-#read in the first file and make a dictionary
+Database = Ensembl Genes 95
+Choose Dataset = specific to the organism
+
+Filters: 
+    Your first time on the site, it will default to some selections, unselect all filters. The filter parameter should read [None selected] to move on to adding Attributes. 
+
+Attributes:
+    for this script to work, the following Attributes must be selected in the specified order, and will be found under +GENE:
+    
+        Transript stable ID version
+        Gene stable ID version
+        Gene name
+        Gene description
+    
+Results(top of left margin options)
+    Ensure 'Export all results to' has been selected as 'File' and 'TSV'
+    Hit 'Go'
+
+A file with name mart_export.tsv has been added to your downloads directory.
+Rename the file: G_species_MMM_YYYY.mart.tsv and move it into the same directory with the UCSC BED file. 
+
+"""
+import os
+os.chdir('PATH/TO/quickloadORrepo/G_species_MMM_YYYY')
+
+
+file1 = open('mart.tsv')
+file2 = open('ensGene.bed')
+   
+# read in the first file and make a dictionary
 martDict = {}
-
-
+              
 for line in file1:
-    fields = line.strip().split('\t')
-    field14 = ' '.join(fields[2:])
-    if len(fields) == 1:
-        martDict[fields[0]] = ''
-    else:
+    fields = line.strip().split('\t')   
+    if len(fields) == 3:
+        fields.append('NA')
+        field14 = ' '.join(fields[2:])
+        martDict[fields[0]] = fields[1] + '\t' + field14
+    elif len(fields) == 2:
+        N = ['NA','NA']
+        fields.extend(N)
+        field14 = '\t'.join(fields[2:])
+        martDict[fields[0]] = fields[1] + '\t' + field14
+    else: 
+        field14 = ' '.join(fields[2:])
         martDict[fields[0]] = fields[1] + '\t' + field14
         
-
+               
 #open the output file
-outfile = open('G_species_MMM_YYYY.ensGene.bed', 'w')
+outfile = open('C_sabeus_Mar_2014_ensGene.bed', 'w')
 
-
-#read in second file and use key (field 4) to map to the dictionary 
-#and append line with mapped value from dictionary
+#read in second file use field 3 (Ensembl gene ID) to search dictionary
 for line in file2:
-    fields = line.strip().split('\t')
-    # add the new field
+    fields = line.strip('\n').split('\t')
+    # add the new fields to the BED12 file
     if fields[3] in martDict:
         line = '\t'.join(fields) + '\t' + martDict[fields[3]]
-    else:
-        line = '\t'.join(fields) + '\t' + martDict[fields[3]] + '\tNA'
-    
-    #writing to ouput file, which will write to the current working directory
+
+    #write to new file creating BED14/detail
+    #this will be added to the directory housing the biomart .tsv & ensGene BED    
     outfile.write(line + '\n')
+       
+
