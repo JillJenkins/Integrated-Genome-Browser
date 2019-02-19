@@ -1,4 +1,4 @@
-# Integrated-Genome-Browser
+## Integrated Genome Browser
 
 As the software data manager for the Integrated Genome Browser ('Ig-Bee'), I am responsible for maintaining IGB's primary Quickload repository. Each genome in IGB, and therefore in the repository, requires at least two files: a gene assembly reference file (.2bit) and annotations or gene features file (BED detail/BED14). 
 
